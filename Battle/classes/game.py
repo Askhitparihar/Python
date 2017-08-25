@@ -13,7 +13,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 class Person:
-    def __init__(self, hp, mp, atk, df, magic):
+    def __init__(self, hp, mp, atk, df, magic, items):
         self.maxHp = hp
         self.hp = hp
         self.maxMp = mp
@@ -22,7 +22,8 @@ class Person:
         self.atkh = atk + 10
         self.df = df
         self.magic = magic
-        self.actions = ["Attack", "Magic"]
+        self.items = items
+        self.actions = ["Attack", "Magic", "Items"]
 
     def generateDmg(self):
         return random.randrange(self.atkl, self.atkh)
@@ -55,14 +56,21 @@ class Person:
 
     def chooseAction(self):
         i = 1
-        print("Actions: ")
+        print("\n" + bcolors.OKBLUE + bcolors.BOLD + "ACTIONS: " + bcolors.ENDC)
         for item in self.actions:
-            print(str(i) + ":" + str(item))
+            print("    " + str(i) + ":" + str(item))
             i += 1
 
     def chooseMagic(self):
         i = 1
-        print(bcolors.OKBLUE + bcolors.BOLD + "Magic: " + bcolors.ENDC)
+        print("\n" + bcolors.OKBLUE + bcolors.BOLD + "MAGIC: " + bcolors.ENDC)
         for spell in self.magic:
-            print(str(i) + ":" + str(spell.name) + " (cost:" + str(spell.cost) + ")")
+            print("    " + str(i) + ":" + str(spell.name) + " (cost:" + str(spell.cost) + ")")
+            i += 1
+
+    def chooseItem(self):
+        i = 1
+        print("\n" + bcolors.OKGREEN + bcolors.BOLD + "ITEMS:" + bcolors.ENDC)
+        for item in self.items:
+            print("    " + str(i) + ", " + item["item"].name + ": " + item["item"].description, + " (x" +str(item["quantity"]) + ")")
             i += 1
