@@ -1,3 +1,4 @@
+# coding=utf-8
 import random
 from .magic import Spell
 
@@ -12,8 +13,10 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
 class Person:
-    def __init__(self, hp, mp, atk, df, magic, items):
+    def __init__(self, name, hp, mp, atk, df, magic, items):
+        self.name = name
         self.maxHp = hp
         self.hp = hp
         self.maxMp = mp
@@ -56,7 +59,8 @@ class Person:
 
     def chooseAction(self):
         i = 1
-        print("\n" + bcolors.OKBLUE + bcolors.BOLD + "ACTIONS: " + bcolors.ENDC)
+        print("\n" + bcolors.BOLD + self.name + bcolors.ENDC)
+        print(bcolors.OKBLUE + bcolors.BOLD + "ACTIONS: " + bcolors.ENDC)
         for item in self.actions:
             print("    " + str(i) + ":" + str(item))
             i += 1
@@ -72,5 +76,37 @@ class Person:
         i = 1
         print("\n" + bcolors.OKGREEN + bcolors.BOLD + "ITEMS:" + bcolors.ENDC)
         for item in self.items:
-            print("    " + str(i) + ", " + item["item"].name + ": " + item["item"].description, + " (x" +str(item["quantity"]) + ")")
+            print("    " + str(i) + ", " + item["item"].name + ": " + item["item"].description,
+                  + " (x" + str(item["quantity"]) + ")")
             i += 1
+
+    def chooseTarget(self, targets):
+        i = 1
+        print("\n" + bcolors.FAIL + bcolors.BOLD + "TARGET: " + bcolors.ENDC)
+        for target in targets:
+            print(str(i) + "." + target.name)
+            i += 1
+        choice = int(input("Choose enemy: ")) - 1
+        return choice
+
+    def getPlayerStats(self):
+        print(bcolors.BOLD + str(self.name) + " " +
+              bcolors.OKGREEN + str(self.hp) + "/" + str(self.maxHp) +  bcolors.ENDC + "  |  " + bcolors.BOLD +
+              bcolors.OKBLUE + str(self.mp) + "/" + str(self.maxMp) + bcolors.ENDC)
+
+    def getEnemyStats(self):
+        print(bcolors.BOLD + str(self.name) + " " +
+              bcolors.FAIL + str(self.hp) + "/" + str(self.maxHp) +  bcolors.ENDC + "  |  " + bcolors.BOLD +
+              bcolors.OKBLUE + str(self.mp) + "/" + str(self.maxMp) + bcolors.ENDC)
+
+    def chooseEnemySpell(self):
+        magicChoice = random.randrange(0, len(self.magic))
+        spell = self.magic[magicChoice]
+        magicDmg = spell.generateDmg()
+
+        pct = self.hp / self.maxHp * 100
+
+        if self.mp < spell.cost or spell.type == "White" and pct  > 50:
+            self.chooseEnemySpell()
+        else:
+            return spell, magicDmg
